@@ -34,7 +34,7 @@ torch::Tensor bit_decomp(torch::Tensor temp, int rows = 5, int k = 3, int l = 11
     for (int i = 0; i < k; i++)
     {
       torch::Tensor c = binary(temp[y][i], l);
-      std::cout << temp[y][i];
+      //std::cout << temp[y][i];
       for (int j = 0; j < l; j++)
       {
         b[y][size++] = c[0][j];
