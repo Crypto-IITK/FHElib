@@ -87,12 +87,3 @@ torch::Tensor powersof2(torch::Tensor b, int rows = 3, int k = 3, int l = 11)
   return ans;
 }
 
-int main(int argc, char const *argv[])
-{
-  torch::Tensor a = (torch::Tensor)function();
-  //std::cout << a;
-  // torch::Tensor b = flatten(a, 3, 3, 11);
-  // std::cout << b;
-
-  return 0;
-}
