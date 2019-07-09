@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <torch/csrc/autograd/variable.h>
+#include <cmath>
 
 //using namespace std;
 
@@ -11,9 +12,28 @@ torch::Tensor function()
   return a;
 }
 
+torch::Tensor binaryVector(torch::Tensor a, int n, int q) {
+  int l=floor(log2(q)+1);
+  torch::Tensor b  = torch::ones({(n+1)*l, 1});
+  int i=0, j=0;
+  torch::Tensor k;
+  while(i<=n) {
+    j=0;
+    k=a[i];
+    while(j<l) {
+      //std::cout<<b<<std::endl;
+      b[i*l+l-j-1]=torch::remainder(k,2);
+      k=(k-torch::remainder(k,2))/2;
+      j++;
+    }
+    i++;
+  }
+  return b;
+}
+
 torch::Tensor binary(torch::Tensor a, int l = 11)
 {
-  torch::Tensor b = torch::ones({1, l});
+  torch::Tensor b = torch::ones({1,l});
   int index = 0;
   while (l)
   {
@@ -21,7 +41,6 @@ torch::Tensor binary(torch::Tensor a, int l = 11)
     a = (a - a % 2) / 2;
     l--;
   }
-  //std::cout << "Binary here" << b;
   return b;
 }
 
@@ -70,18 +89,14 @@ torch::Tensor flatten(torch::Tensor temp, int r = 5, int k = 3, int l = 11)
   return b;
 }
 
-torch::Tensor powersof2(torch::Tensor b, int rows = 3, int k = 3, int l = 11)
-{
-  torch::Tensor ans = torch::zeros({rows, k * l});
-  for (int y = 0; y < rows; y++)
+torch::Tensor powersof2(torch::Tensor b, int n = 3, int q = 11) {
+  int l=floor(log2(q)+1);
+  torch::Tensor ans = torch::zeros({(n+1)*l, 1});
+  for (int i = 0; i <= n; i++)
   {
-    int size = 0;
-    for (int i = 0; i < k; i++)
+    for (int j = 0; j < l; j++)
     {
-      for (int j = 0; j < l; j++)
-      {
-        ans[rows][size++] = pow(2, j) * b[rows][i];
-      }
+      ans[i*l+j] = pow(2,j)*b[i];
     }
   }
   return ans;
