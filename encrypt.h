@@ -23,11 +23,11 @@ torch::Tensor GenPublicKey(torch::Tensor Sk, int n, int m, int q, float param) {
 torch::Tensor GSWEncrypt(torch::Tensor A, int message, int n, int m, int q) {
   int l=floor(log2(q)+1);
   int N = l*(n+1);
-  torch::Tensor R=torch::randint(2, {n+1, n});
+  torch::Tensor R=torch::randint(2, {N, m});
   torch::Tensor RA=torch::remainder(torch::mm(R, A),q);
-  torch::Tensor messageI= torch::remainder(message*torch::eye(n+1), q);
-  // torch::Tensor bd_RA=bit_decomp(RA,N,n+1,l);
-  torch::Tensor C=torch::remainder(torch::add(messageI,RA),q);
+  torch::Tensor messageI= torch::remainder(message*torch::eye(N), q);
+  torch::Tensor bd_RA=bit_decomp(RA,N,n+1,l);
+  torch::Tensor C=torch::remainder(flatten(torch::add(messageI,bd_RA),N,n+1,l),q);
   return C;
 }
 

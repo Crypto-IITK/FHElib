@@ -91,12 +91,12 @@ torch::Tensor flatten(torch::Tensor temp, int r = 5, int k = 3, int l = 11)
 
 torch::Tensor powersof2(torch::Tensor b, int n = 3, int q = 11) {
   int l=floor(log2(q)+1);
-  torch::Tensor ans = torch::zeros({(n+1)*l, 1});
+  torch::Tensor ans = torch::zeros({(n+1)*(l), 1});
   for (int i = 0; i <= n; i++)
   {
     for (int j = 0; j < l; j++)
     {
-      ans[i*l+j] = pow(2,j)*b[i];
+      ans[i*(l)+j] = torch::remainder(pow(2,j)*b[i],q);
     }
   }
   return ans;
